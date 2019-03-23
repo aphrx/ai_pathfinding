@@ -56,10 +56,6 @@ public class Node {
 		this.targetID = targetID;
 	}
 
-	public int getTargetID() {
-		return targetID;
-	}
-
 	public int getX() {
 		return x;
 	}
@@ -75,9 +71,5 @@ public class Node {
 
 	public void setIsFound(boolean isFound) {
 		this.isFound = isFound;
-	}
-
-	public boolean getIsFound() {
-		return isFound;
 	}
 }
