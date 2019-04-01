@@ -14,7 +14,7 @@ public class Agent {
 	private int frameX, frameY;
 	private String color;
 	private Message broadcast;
-	boolean isActive, won, isDiverting;
+	private boolean isActive, won, isDiverting;
 
 	private ArrayList<Node> targets = new ArrayList<Node>(); // found targets go here
 	private Stack<Coordinate> path = new Stack<Coordinate>(); // path coordinates go here
@@ -233,6 +233,14 @@ public class Agent {
 
 	public void clearBroadcast() {
 		broadcast = null;
+	}
+
+	public boolean getIsActive() {
+		return isActive;
+	}
+
+	public boolean getIsDiverting() {
+		return isDiverting;
 	}
 
 }

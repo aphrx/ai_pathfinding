@@ -74,7 +74,7 @@ public class Simulation extends JPanel {
 					continue;
 
 				// if its already diverting, leave alone
-				if (agents[i].isDiverting || agents[j].isDiverting)
+				if (agents[i].getIsDiverting() || agents[j].getIsDiverting())
 					continue;
 
 				// get center radius, coordinates, velocities
@@ -172,7 +172,7 @@ public class Simulation extends JPanel {
 
 		// loop through all agents
 		for (int i = 0; i < agents.length; i++) {
-			if (agents[i].isActive) {
+			if (agents[i].getIsActive()) {
 				checkBroadcast(agents[i]);
 				agents[i].update();
 			}
