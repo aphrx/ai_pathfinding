@@ -24,7 +24,7 @@ public class Simulation extends JPanel {
 	public boolean isSimulating;
 
 	private Node[][] nodes = new Node[SIZE][SIZE];
-	private Agent[] agents = new Agent[5];
+	private Agent[] agents = new Agent[2];
 
 	public Simulation(int iteration) {
 		setup();
@@ -121,9 +121,6 @@ public class Simulation extends JPanel {
 						else
 							agents[i].divertPath(new Coordinate(x1 - 5, y1)); // divert left
 					}
-
-					else {
-						/* non moving collision, should never happen */}
 				}
 			}
 		}
@@ -286,25 +283,9 @@ public class Simulation extends JPanel {
 		fw.write(sb.toString());
 		fw.close();
 	}
-	
-	public static void runJarFile(String args[]) throws IOException {
-		if (args.length == 0) {
-			Process p = Runtime.getRuntime().exec("cmd.exe /c start java -jar " + (new File(Simulation.class.getProtectionDomain().getCodeSource().getLocation().getPath())).getAbsolutePath() + " cmd");
-			p.pid(); // to get rid of annoying warning
-		}
-		else {
-			System.out.println(" ------------------------------------");
-			System.out.println("|Jasindan Rasalingam                 |");
-			System.out.println(" ------------------------------------");
-			System.out.println("\n");
-		}
-	}
 
 	public static void main(String args[]) throws InterruptedException, IOException {
 
-		// Start the .jar file via command prompt when double clicked
-		runJarFile(args);
-		
 		Scanner in = new Scanner(System.in);
 		int iterations, simSpeed;
 
