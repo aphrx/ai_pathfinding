@@ -24,7 +24,7 @@ public class Simulation extends JPanel {
 	public boolean isSimulating;
 
 	private Node[][] nodes = new Node[SIZE][SIZE];
-	private Agent[] agents = new Agent[1];
+	private Agent[] agents = new Agent[2];
 
 	public Simulation(int iteration) {
 		setup();
