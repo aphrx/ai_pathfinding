@@ -1,9 +1,9 @@
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.Random;
 import java.util.Stack;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -14,12 +14,11 @@ public class Agent {
 	private int frameX, frameY;
 	private String color;
 	private Message broadcast;
-	private boolean isActive, won, isDiverting;
+	boolean isActive, won, isDiverting;
 
-	private Random rand = new Random();
 	private ArrayList<Node> targets = new ArrayList<Node>(); // found targets go here
+	private ArrayList<Double> happys = new ArrayList<Double>(); // happiness go here
 	private Stack<Coordinate> path = new Stack<Coordinate>(); // path coordinates go here
-	private ArrayList<Coordinate> undiscovered = new ArrayList<>(); //
 	private Queue<Message> inbox = new LinkedList<Message>(); // direct messages go here
 	private Coordinate currentTarget;
 
@@ -30,7 +29,7 @@ public class Agent {
 		radius = 10; // radar radius
 		numFound = stepCount = 0;
 		spawn();
-		setupPath();
+		setupPath(Simulation.mode);
 
 		isActive = true;
 	}
@@ -41,70 +40,115 @@ public class Agent {
 		y = ThreadLocalRandom.current().nextInt(0, frameY / 10 - 2 * radius);
 	}
 
-	public void setupPath() {
-		currentTarget = new Coordinate(0, 0); // set mode 1 start
-		path.push(new Coordinate(0, 0)); // end
-		// set color
+	public void setupPath(int mode) {
+		// set color and create path in reverse
 		switch (agentID) {
-			//Jasindan
+		case 0:
+			color = "GREEN";
+			if (mode == 0) {
+				currentTarget = new Coordinate(0, 0); // set mode 1 start
+				path.push(new Coordinate(0, 10)); // end
+			}
+			break;
+		case 1:
+			color = "BLUE";
+			if (mode == 0) {
+				currentTarget = new Coordinate(0, 20); // set mode 1start
+				path.push(new Coordinate(0, 30)); // end
+			}
+			break;
+		case 2:
+			color = "BLACK";
+			if (mode == 0) {
+				currentTarget = new Coordinate(0, 40); // set mode 1 start
+				path.push(new Coordinate(0, 50)); // end
+			}
+			break;
+		case 3:
+			color = "ORANGE";
+			if (mode == 0) {
+				currentTarget = new Coordinate(0, 60); // set mode 1 start
+				path.add(new Coordinate(0, 70)); // end
+			}
+			break;
+		case 4:
+			color = "RED";
+			if (mode == 0) {
+				currentTarget = new Coordinate(0, 80); // start
+				path.add(new Coordinate(0, 90)); // end
+			}
+			break;
+		}
+		generatePath(Simulation.mode);
+	}
+
+	public void generatePath(int mode) {
+
+		if (mode == 0) {
+			// add path to stack in reverse inorder to unstack it normally
+			path.add(new Coordinate(0, 0)); // top left
+			path.add(new Coordinate(100, 0));
+			path.add(new Coordinate(100, 20));
+			path.add(new Coordinate(20, 20));
+			path.add(new Coordinate(20, 40));
+			path.add(new Coordinate(100, 40));
+			path.add(new Coordinate(100, 60));
+			path.add(new Coordinate(20, 60));
+			path.add(new Coordinate(20, 80));
+			path.add(new Coordinate(100, 80));
+			path.add(new Coordinate(100, 100));
+			path.add(new Coordinate(0, 100)); // bottom left
+		}
+
+		// scenario 2 and 3 path
+		else {
+			switch (agentID) {
 			case 0:
-				color = "GREEN";
+				path.add(new Coordinate(50, 50)); // back to center
+				path.add(new Coordinate(0, 0));
+				path.add(new Coordinate(100, 0));
+				path.add(new Coordinate(100, 100));
+				path.add(new Coordinate(0, 100));
+				path.add(new Coordinate(90, 10));
+				currentTarget = new Coordinate(10, 10); // start
 				break;
-			//Amal
 			case 1:
-				color = "BLUE";
+				path.add(new Coordinate(44, 44)); // back to center
+				path.add(new Coordinate(0, 100));
+				path.add(new Coordinate(0, 0));
+				path.add(new Coordinate(100, 0));
+				path.add(new Coordinate(100, 100));
+				path.add(new Coordinate(10, 30));
+				currentTarget = new Coordinate(90, 30); // start
 				break;
 			case 2:
-				color = "BLACK";
+				path.add(new Coordinate(56, 44)); // back to center
+				path.add(new Coordinate(100, 100));
+				path.add(new Coordinate(0, 100));
+				path.add(new Coordinate(0, 0));
+				path.add(new Coordinate(100, 0));
+				path.add(new Coordinate(90, 50));
+				currentTarget = new Coordinate(10, 50); // start
 				break;
 			case 3:
-				color = "ORANGE";
+				path.add(new Coordinate(44, 54)); // back to center
+				path.add(new Coordinate(100, 0));
+				path.add(new Coordinate(100, 100));
+				path.add(new Coordinate(0, 100));
+				path.add(new Coordinate(0, 0));
+				path.add(new Coordinate(10, 70));
+				currentTarget = new Coordinate(90, 70); // start
 				break;
 			case 4:
-				color = "RED";
-				break;
-		}
-		generateUndiscovered();
-		generatePath();
-	}
-
-	public void generateUndiscovered(){
-		for (int i = 0; i <= 100; i+=20) {
-			for (int j = 0; j <= 100; j += 20) {
-				undiscovered.add(new Coordinate(i, j));
-			}
-		}
-	}
-
-
-
-	public void generatePath() {
-
-		switch (agentID) {
-			//Jasindan
-			case 0:
-				// add path to stack in reverse inorder to unstack it normally
-				path.add(new Coordinate(0, 0)); // top left
-				path.add(new Coordinate(100, 0));
-				path.add(new Coordinate(100, 20));
-				path.add(new Coordinate(20, 20));
-				path.add(new Coordinate(20, 40));
-				path.add(new Coordinate(100, 40));
-				path.add(new Coordinate(100, 60));
-				path.add(new Coordinate(20, 60));
-				path.add(new Coordinate(20, 80));
-				path.add(new Coordinate(100, 80));
+				path.add(new Coordinate(54, 54)); // back to center
+				path.add(new Coordinate(0, 0));
 				path.add(new Coordinate(100, 100));
-				path.add(new Coordinate(0, 100)); // bottom left
+				path.add(new Coordinate(0, 100));
+				path.add(new Coordinate(0, 100));
+				path.add(new Coordinate(90, 90)); // end
+				currentTarget = new Coordinate(10, 90); // start
 				break;
-			//Amal
-			case 1:
-				while (undiscovered.size() != 0) {
-					int n = rand.nextInt(undiscovered.size());
-					path.add(undiscovered.get(n));
-					undiscovered.remove(n);
-				}
-				break;
+			}
 		}
 	}
 
@@ -124,8 +168,6 @@ public class Agent {
 			velY = 1;
 		else
 			velY = 0;
-
-
 	}
 
 	public void move() {
@@ -138,13 +180,6 @@ public class Agent {
 					isDiverting = false;
 			}
 		}
-
-		for(int i = 0; i <  path.size(); i++){
-			if (x == path.get(i).getX() && y == path.get(i).getY()){
-				path.remove(i);
-			}
-		}
-
 		setDirection(); // set the direction
 
 		// move agent normally
@@ -153,9 +188,11 @@ public class Agent {
 
 		if (velX != 0) {
 			stepCount++;
+			addHappinessValue();
 		}
 		if (velY != 0) {
 			stepCount++;
+			addHappinessValue();
 		}
 	}
 
@@ -170,7 +207,8 @@ public class Agent {
 	// if agent learns of a target location, sidetrack
 	public void sideTrack(Coordinate c) {
 		path.add(currentTarget); // add current target to path again
-		path.add(new Coordinate(x, y)); // add current location to path, only needed for mode 2
+		if (Simulation.mode == 1)
+			path.add(new Coordinate(x, y)); // add current location to path, only needed for mode 2
 		currentTarget = c; // change current target to target that was given
 		setDirection();
 	}
@@ -199,21 +237,21 @@ public class Agent {
 	public void draw(Graphics2D g2d) {
 		// color code agents by rgb, 25% transparent
 		switch (agentID) {
-			case 0:
-				g2d.setColor(new Color(0, 153, 51, 63));
-				break;
-			case 1:
-				g2d.setColor(new Color(0, 102, 255, 63));
-				break;
-			case 2:
-				g2d.setColor(new Color(0, 0, 0, 63));
-				break;
-			case 3:
-				g2d.setColor(new Color(255, 102, 0, 63));
-				break;
-			case 4:
-				g2d.setColor(new Color(255, 0, 0, 63));
-				break;
+		case 0:
+			g2d.setColor(new Color(0, 153, 51, 63));
+			break;
+		case 1:
+			g2d.setColor(new Color(0, 102, 255, 63));
+			break;
+		case 2:
+			g2d.setColor(new Color(0, 0, 0, 63));
+			break;
+		case 3:
+			g2d.setColor(new Color(255, 102, 0, 63));
+			break;
+		case 4:
+			g2d.setColor(new Color(255, 0, 0, 63));
+			break;
 		}
 
 		// draw radar
@@ -239,6 +277,10 @@ public class Agent {
 		return radius;
 	}
 
+	public int getDiameter() {
+		return 2 * radius;
+	}
+
 	public int getVelX() {
 		return velX;
 	}
@@ -255,14 +297,73 @@ public class Agent {
 		return numFound;
 	}
 
+	public void addHappinessValue() {
+		happys.add((double) numFound / (stepCount + 1.0));
+	}
+
+	public double getHappiness() {
+		return happys.get(happys.size() - 1);
+	}
+
+	public double getMaxHappiness() {
+		return Collections.max(happys);
+	}
+
+	public double getMinHappiness() {
+		return Collections.min(happys);
+	}
+
+	public double getAverageHappiness() {
+		double total = 0;
+		for (Double h : happys)
+			total += (double) h;
+		return total;
+	}
+
+	public double getVarianceHappiness() {
+		double avg = getAverageHappiness(), temp = 0;
+		for (Double d : happys)
+			temp += (d - avg) * (d - avg);
+		return temp / (happys.size() - 1);
+	}
+
+	public double getSTDHappiness() {
+		return Math.sqrt(getVarianceHappiness());
+	}
+
+	public double getCompetitiveness() {
+		if (getHappiness() == 0)
+			return 0;
+		return (getHappiness() - getMinHappiness()) / (getMaxHappiness() - getMinHappiness());
+	}
 
 	public String getColor() {
 		return color;
 	}
 
+	public String locationToString() {
+		return "(" + String.valueOf(x) + ", " + String.valueOf(y) + ")";
+	}
+
+	public void setVelX(int velX) {
+		this.velX = velX;
+	}
+
+	public void setVelY(int velY) {
+		this.velY = velY;
+	}
+
+	public ArrayList<Node> getTargets() {
+		return targets;
+	}
+
 	public void addTarget(Node target) {
 		targets.add(target);
 		numFound = targets.size();
+	}
+
+	public void addPath(Coordinate c) {
+		path.add(c);
 	}
 
 	public Message getBroadcast() {
@@ -273,12 +374,7 @@ public class Agent {
 		broadcast = null;
 	}
 
-	public boolean getIsActive() {
-		return isActive;
+	public void addMessage(Message m) {
+		inbox.add(m);
 	}
-
-	public boolean getIsDiverting() {
-		return isDiverting;
-	}
-
 }
