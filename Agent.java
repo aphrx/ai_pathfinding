@@ -15,12 +15,8 @@ public class Agent {
 	private int frameX, frameY;
 	private String color;
 	private Message broadcast;
-<<<<<<< HEAD
 	boolean isActive, won, isDiverting, willListen, lies;
-=======
 	private Random rand = new Random();
-	boolean isActive, won, isDiverting;
->>>>>>> e45a93c5313e6d2e12e0f5e6d5ea7f24acc8f303
 
 	private ArrayList<Node> targets = new ArrayList<Node>(); // found targets go here
 	private ArrayList<Coordinate> undiscovered = new ArrayList<Coordinate>();
@@ -82,152 +78,93 @@ public class Agent {
 
 	public void generatePath(int mode) {
 
-<<<<<<< HEAD
-		if (mode == 0) {
-			//add path to stack in reverse inorder to unstack it normally
-			path.add(new Coordinate(0, 0)); // top left
-			path.add(new Coordinate(100, 0));
-			path.add(new Coordinate(100, 20));
-			path.add(new Coordinate(20, 20));
-			path.add(new Coordinate(20, 40));
-			path.add(new Coordinate(100, 40));
-			path.add(new Coordinate(100, 60));
-			path.add(new Coordinate(20, 60));
-			path.add(new Coordinate(20, 80));
-			path.add(new Coordinate(100, 80));
-			path.add(new Coordinate(100, 100));
-			path.add(new Coordinate(0, 100)); // bottom left
-=======
-		if (true) {
-			switch (agentID) {
-				//Jasindan
-				case 0:
-					// add path to stack in reverse inorder to unstack it normally
-					path.add(new Coordinate(0, 0)); // top left
-					path.add(new Coordinate(100, 0));
-					path.add(new Coordinate(100, 20));
-					path.add(new Coordinate(20, 20));
-					path.add(new Coordinate(20, 40));
-					path.add(new Coordinate(100, 40));
-					path.add(new Coordinate(100, 60));
-					path.add(new Coordinate(20, 60));
-					path.add(new Coordinate(20, 80));
-					path.add(new Coordinate(100, 80));
-					path.add(new Coordinate(100, 100));
-					path.add(new Coordinate(0, 100)); // bottom left
-					break;
-				//Amal
-				case 1:
-					while (undiscovered.size() != 0) {
-						int n = rand.nextInt(undiscovered.size());
-						path.add(undiscovered.get(n));
-						undiscovered.remove(n);
-					}
-					break;
-			}
->>>>>>> e45a93c5313e6d2e12e0f5e6d5ea7f24acc8f303
-		}
+			if (true) {
+				switch (agentID) {
+					//Jasindan
+					case 0:
+						// add path to stack in reverse inorder to unstack it normally
+						path.add(new Coordinate(0, 0)); // top left
+						path.add(new Coordinate(100, 0));
+						path.add(new Coordinate(100, 20));
+						path.add(new Coordinate(20, 20));
+						path.add(new Coordinate(20, 40));
+						path.add(new Coordinate(100, 40));
+						path.add(new Coordinate(100, 60));
+						path.add(new Coordinate(20, 60));
+						path.add(new Coordinate(20, 80));
+						path.add(new Coordinate(100, 80));
+						path.add(new Coordinate(100, 100));
+						path.add(new Coordinate(0, 100)); // bottom left
+						break;
+					//Amal
+					case 1:
+						while (undiscovered.size() != 0) {
+							int n = rand.nextInt(undiscovered.size());
+							path.add(undiscovered.get(n));
+							undiscovered.remove(n);
+						}
+						break;
+					//Kalev
+					case 2:
+						while (undiscovered.size() != 0) {
+							int n = rand.nextInt(undiscovered.size());
+							path.add(undiscovered.get(n));
+							undiscovered.remove(n);
+						}
+						break;
+					// scenario 2 and 3 path
+				}
+			} else {
+				switch (agentID) {
+					case 0:
+						path.add(new Coordinate(50, 50)); // back to center
+						path.add(new Coordinate(0, 0));
+						path.add(new Coordinate(100, 0));
+						path.add(new Coordinate(100, 100));
+						path.add(new Coordinate(0, 100));
+						path.add(new Coordinate(90, 10));
+						currentTarget = new Coordinate(10, 10); // start
+						break;
+					case 1:
+						path.add(new Coordinate(44, 44)); // back to center
+						path.add(new Coordinate(0, 100));
+						path.add(new Coordinate(0, 0));
+						path.add(new Coordinate(100, 0));
+						path.add(new Coordinate(100, 100));
+						path.add(new Coordinate(10, 30));
+						currentTarget = new Coordinate(90, 30); // start
+						break;
+					case 2:
+						path.add(new Coordinate(56, 44)); // back to center
+						path.add(new Coordinate(100, 100));
+						path.add(new Coordinate(0, 100));
+						path.add(new Coordinate(0, 0));
+						path.add(new Coordinate(100, 0));
+						path.add(new Coordinate(90, 50));
+						currentTarget = new Coordinate(10, 50); // start
+						break;
+					case 3:
+						path.add(new Coordinate(44, 54)); // back to center
+						path.add(new Coordinate(100, 0));
+						path.add(new Coordinate(100, 100));
+						path.add(new Coordinate(0, 100));
+						path.add(new Coordinate(0, 0));
+						path.add(new Coordinate(10, 70));
+						currentTarget = new Coordinate(90, 70); // start
+						break;
+					case 4:
 
-		// scenario 2 and 3 path
-		else {
-			switch (agentID) {
-<<<<<<< HEAD
-			case 0:
-				path.add(new Coordinate(50, 50)); // back to center
-				path.add(new Coordinate(0, 0));
-				path.add(new Coordinate(100, 0));
-				path.add(new Coordinate(100, 100));
-				path.add(new Coordinate(0, 100));
-				path.add(new Coordinate(90, 10));
-				currentTarget = new Coordinate(10, 10); // start
-				break;
-			case 1:
-				path.add(new Coordinate(44, 44)); // back to center
-				path.add(new Coordinate(0, 100));
-				path.add(new Coordinate(0, 0));
-				path.add(new Coordinate(100, 0));
-				path.add(new Coordinate(100, 100));
-				path.add(new Coordinate(10, 30));
-				currentTarget = new Coordinate(90, 30); // start
-				break;
-			case 2:
-				path.add(new Coordinate(56, 44)); // back to center
-				path.add(new Coordinate(100, 100));
-				path.add(new Coordinate(0, 100));
-				path.add(new Coordinate(0, 0));
-				path.add(new Coordinate(100, 0));
-				path.add(new Coordinate(90, 50));
-				currentTarget = new Coordinate(10, 50); // start
-				break;
-			case 3:
-				path.add(new Coordinate(44, 54)); // back to center
-				path.add(new Coordinate(100, 0));
-				path.add(new Coordinate(100, 100));
-				path.add(new Coordinate(0, 100));
-				path.add(new Coordinate(0, 0));
-				path.add(new Coordinate(10, 70));
-				currentTarget = new Coordinate(90, 70); // start
-				break;
-			case 4:
-
-				path.add(new Coordinate(54, 54)); // back to center
-				path.add(new Coordinate(0, 0));
-				path.add(new Coordinate(100, 100));
-				path.add(new Coordinate(0, 100));
-				path.add(new Coordinate(0, 100));
-				path.add(new Coordinate(90, 90)); // end
-				currentTarget = new Coordinate(10, 90); // start
-				break;
-=======
-				case 0:
-					path.add(new Coordinate(50, 50)); // back to center
-					path.add(new Coordinate(0, 0));
-					path.add(new Coordinate(100, 0));
-					path.add(new Coordinate(100, 100));
-					path.add(new Coordinate(0, 100));
-					path.add(new Coordinate(90, 10));
-					currentTarget = new Coordinate(10, 10); // start
-					break;
-				case 1:
-					path.add(new Coordinate(44, 44)); // back to center
-					path.add(new Coordinate(0, 100));
-					path.add(new Coordinate(0, 0));
-					path.add(new Coordinate(100, 0));
-					path.add(new Coordinate(100, 100));
-					path.add(new Coordinate(10, 30));
-					currentTarget = new Coordinate(90, 30); // start
-					break;
-				case 2:
-					path.add(new Coordinate(56, 44)); // back to center
-					path.add(new Coordinate(100, 100));
-					path.add(new Coordinate(0, 100));
-					path.add(new Coordinate(0, 0));
-					path.add(new Coordinate(100, 0));
-					path.add(new Coordinate(90, 50));
-					currentTarget = new Coordinate(10, 50); // start
-					break;
-				case 3:
-					path.add(new Coordinate(44, 54)); // back to center
-					path.add(new Coordinate(100, 0));
-					path.add(new Coordinate(100, 100));
-					path.add(new Coordinate(0, 100));
-					path.add(new Coordinate(0, 0));
-					path.add(new Coordinate(10, 70));
-					currentTarget = new Coordinate(90, 70); // start
-					break;
-				case 4:
-					path.add(new Coordinate(54, 54)); // back to center
-					path.add(new Coordinate(0, 0));
-					path.add(new Coordinate(100, 100));
-					path.add(new Coordinate(0, 100));
-					path.add(new Coordinate(0, 100));
-					path.add(new Coordinate(90, 90)); // end
-					currentTarget = new Coordinate(10, 90); // start
-					break;
->>>>>>> e45a93c5313e6d2e12e0f5e6d5ea7f24acc8f303
+						path.add(new Coordinate(54, 54)); // back to center
+						path.add(new Coordinate(0, 0));
+						path.add(new Coordinate(100, 100));
+						path.add(new Coordinate(0, 100));
+						path.add(new Coordinate(0, 100));
+						path.add(new Coordinate(90, 90)); // end
+						currentTarget = new Coordinate(10, 90); // start
+						break;
+				}
 			}
 		}
-	}
 
 	public void setDirection() {
 		// decide left, right or none

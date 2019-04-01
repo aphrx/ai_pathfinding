@@ -24,7 +24,7 @@ public class Simulation extends JPanel {
 	public boolean isSimulating;
 
 	private Node[][] nodes = new Node[SIZE][SIZE];
-	private Agent[] agents = new Agent[2];
+	private Agent[] agents = new Agent[3];
 
 	public Simulation(int iteration) {
 		setup();
@@ -74,15 +74,11 @@ public class Simulation extends JPanel {
 		agents[0].setLyingAttribute(false);
 		agents[1].setLyingAttribute(false);
 		agents[2].setLyingAttribute(true);
-		agents[3].setLyingAttribute(false);
-		agents[4].setLyingAttribute(false);
 
 		//set agents LISTEN attributes (broadcasts need to be fixed)
 		agents[0].setListenAttribute(true);
-		agents[1].setListenAttribute(true);
+		agents[1].setListenAttribute(false);
 		agents[2].setListenAttribute(true);
-		agents[3].setListenAttribute(false);
-		agents[4].setListenAttribute(true);
 	}
 
 	public void detectAgentCollision() {
@@ -311,7 +307,6 @@ public class Simulation extends JPanel {
 		fw.write(sb.toString());
 		fw.close();
 	}
-<<<<<<< HEAD
 	
 	public static void runJarFile(String args[]) throws IOException {
 		if (args.length == 0) {
@@ -325,8 +320,7 @@ public class Simulation extends JPanel {
 			System.out.println("\n");
 		}
 	}
-=======
->>>>>>> e45a93c5313e6d2e12e0f5e6d5ea7f24acc8f303
+
 
 	public static void main(String args[]) throws InterruptedException, IOException {
 
