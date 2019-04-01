@@ -42,6 +42,9 @@ public class Simulation extends JPanel {
 		for (int i = 0; i < agents.length; i++)
 			agents[i] = new Agent(i, FRAMEX, FRAMEY);
 
+		setAgentAttributes(agents);
+
+
 		// initialize nodes
 		for (int i = 0; i < SIZE; i++) {
 			for (int j = 0; j < SIZE; j++)
@@ -63,6 +66,23 @@ public class Simulation extends JPanel {
 			nodes[xls[i]][yls[i]].setTargetID(i);
 			nodes[xls[i]][yls[i]].setAgentID(i / 5);
 		}
+	}
+
+	//this method is where we different agent attributes are set
+	private void setAgentAttributes(Agent[] agents) {
+		//set agents LIE attribute
+		agents[0].setLyingAttribute(false);
+		agents[1].setLyingAttribute(false);
+		agents[2].setLyingAttribute(true);
+		agents[3].setLyingAttribute(false);
+		agents[4].setLyingAttribute(false);
+
+		//set agents LISTEN attributes (broadcasts need to be fixed)
+		agents[0].setListenAttribute(true);
+		agents[1].setListenAttribute(true);
+		agents[2].setListenAttribute(true);
+		agents[3].setListenAttribute(false);
+		agents[4].setListenAttribute(true);
 	}
 
 	public void detectAgentCollision() {
@@ -166,15 +186,23 @@ public class Simulation extends JPanel {
 					// different agent
 					else if (mode != 0 && nodes[i][j].getAgentID() != -1) {
 
-						// check if target is within search radius and is not already found
+						// check if target is within search radius and is not already found and the agent that found the objective
 						if (isWithinRadius && !nodes[i][j].getIsFound()) {
 							nodes[i][j].setIsFound(true);
 
 							// if scenario 3, check if recipients has less than mostFound-2 targets found
-							if (mode == 2 && agents[nodes[i][j].getAgentID()].getNumFound() < mostFound - 2)
+							if (mode == 2 && agents[nodes[i][j].getAgentID()].getNumFound() < mostFound - 2) {
 								continue;
-							agents[nodes[i][j].getAgentID()].addMessage(new Message(nodes[i][j].getAgentID(),
-									"target found", new Coordinate(nodes[i][j].getX(), nodes[i][j].getY())));
+							}
+							//when a lying agent finds an objective, it will broadcast the wrong coordinates
+							if(agents[k].getLyingAttribute()) {
+								agents[nodes[i][j].getAgentID()].addMessage(new Message(nodes[i][j].getAgentID(),
+										"target found", new Coordinate(0, 0)));
+							} else {
+								agents[nodes[i][j].getAgentID()].addMessage(new Message(nodes[i][j].getAgentID(),
+										"target found", new Coordinate(nodes[i][j].getX(), nodes[i][j].getY())));
+							}
+
 						}
 					}
 				}
@@ -290,7 +318,7 @@ public class Simulation extends JPanel {
 	public static void runJarFile(String args[]) throws IOException {
 		if (args.length == 0) {
 			Process p = Runtime.getRuntime().exec("cmd.exe /c start java -jar " + (new File(Simulation.class.getProtectionDomain().getCodeSource().getLocation().getPath())).getAbsolutePath() + " cmd");
-			p.pid(); // to get rid of annoying warning
+			//p.pid(); // to get rid of annoying warning
 		}
 		else {
 			System.out.println(" ------------------------------------");
@@ -330,6 +358,7 @@ public class Simulation extends JPanel {
 		double totalRuntime = System.nanoTime();
 
 		Simulation sim = null;
+
 
 		for (int i = 0; i < iterations; i++) {
 			System.out.println();

@@ -14,7 +14,7 @@ public class Agent {
 	private int frameX, frameY;
 	private String color;
 	private Message broadcast;
-	boolean isActive, won, isDiverting;
+	boolean isActive, won, isDiverting, willListen, lies;
 
 	private ArrayList<Node> targets = new ArrayList<Node>(); // found targets go here
 	private ArrayList<Double> happys = new ArrayList<Double>(); // happiness go here
@@ -85,7 +85,7 @@ public class Agent {
 	public void generatePath(int mode) {
 
 		if (mode == 0) {
-			// add path to stack in reverse inorder to unstack it normally
+			//add path to stack in reverse inorder to unstack it normally
 			path.add(new Coordinate(0, 0)); // top left
 			path.add(new Coordinate(100, 0));
 			path.add(new Coordinate(100, 20));
@@ -140,6 +140,7 @@ public class Agent {
 				currentTarget = new Coordinate(90, 70); // start
 				break;
 			case 4:
+
 				path.add(new Coordinate(54, 54)); // back to center
 				path.add(new Coordinate(0, 0));
 				path.add(new Coordinate(100, 100));
@@ -214,8 +215,8 @@ public class Agent {
 	}
 
 	public void checkInbox() {
-		// if inbox isn't empty, side track current path to new target
-		if (!inbox.isEmpty()) {
+		// if inbox isn't empty and the agent will listen, side track current path to new target
+		if (!inbox.isEmpty()  && getListenAttribute()) {
 			for (int i = 0; i < inbox.size(); i++) {
 				sideTrack(inbox.remove().coordinate);
 			}
@@ -337,6 +338,26 @@ public class Agent {
 		return (getHappiness() - getMinHappiness()) / (getMaxHappiness() - getMinHappiness());
 	}
 
+	public boolean getListeningAbility() {
+		return willListen;
+	}
+
+	public boolean getLyingAttribute() {
+		return lies;
+	}
+
+	public void setLyingAttribute(boolean lie) {
+		this.lies = lie;
+	}
+
+	public boolean getListenAttribute() {
+		return willListen;
+	}
+
+	public void setListenAttribute(boolean listen) {
+		this.willListen = listen;
+	}
+
 	public String getColor() {
 		return color;
 	}
@@ -375,6 +396,7 @@ public class Agent {
 	}
 
 	public void addMessage(Message m) {
+		System.out.print(m);
 		inbox.add(m);
 	}
 }
