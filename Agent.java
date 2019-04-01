@@ -1,9 +1,9 @@
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Random;
 import java.util.Stack;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -16,8 +16,10 @@ public class Agent {
 	private Message broadcast;
 	private boolean isActive, won, isDiverting;
 
+	private Random rand = new Random();
 	private ArrayList<Node> targets = new ArrayList<Node>(); // found targets go here
 	private Stack<Coordinate> path = new Stack<Coordinate>(); // path coordinates go here
+	private ArrayList<Coordinate> undiscovered = new ArrayList<>(); //
 	private Queue<Message> inbox = new LinkedList<Message>(); // direct messages go here
 	private Coordinate currentTarget;
 
@@ -40,41 +42,70 @@ public class Agent {
 	}
 
 	public void setupPath() {
-		// set color and create path in reverse
+		currentTarget = new Coordinate(0, 0); // set mode 1 start
+		path.push(new Coordinate(0, 0)); // end
+		// set color
 		switch (agentID) {
+			//Jasindan
 			case 0:
 				color = "GREEN";
-				currentTarget = new Coordinate(0, 0); // set mode 1 start
-				path.push(new Coordinate(0, 10)); // end
 				break;
+			//Amal
 			case 1:
 				color = "BLUE";
-				currentTarget = new Coordinate(0, 20); // set mode 1start
-				path.push(new Coordinate(0, 30)); // end
 				break;
 			case 2:
 				color = "BLACK";
-				currentTarget = new Coordinate(0, 40); // set mode 1 start
-				path.push(new Coordinate(0, 50)); // end
 				break;
 			case 3:
 				color = "ORANGE";
-				currentTarget = new Coordinate(0, 60); // set mode 1 start
-				path.add(new Coordinate(0, 70)); // end
 				break;
 			case 4:
 				color = "RED";
-				currentTarget = new Coordinate(0, 80); // start
-				path.add(new Coordinate(0, 90)); // end
 				break;
 		}
+		generateUndiscovered();
 		generatePath();
 	}
 
+	public void generateUndiscovered(){
+		for (int i = 0; i <= 100; i+=20) {
+			for (int j = 0; j <= 100; j += 20) {
+				undiscovered.add(new Coordinate(i, j));
+			}
+		}
+	}
+
+
+
 	public void generatePath() {
 
-		path.add(new Coordinate(0, 100)); // bottom left
-
+		switch (agentID) {
+			//Jasindan
+			case 0:
+				// add path to stack in reverse inorder to unstack it normally
+				path.add(new Coordinate(0, 0)); // top left
+				path.add(new Coordinate(100, 0));
+				path.add(new Coordinate(100, 20));
+				path.add(new Coordinate(20, 20));
+				path.add(new Coordinate(20, 40));
+				path.add(new Coordinate(100, 40));
+				path.add(new Coordinate(100, 60));
+				path.add(new Coordinate(20, 60));
+				path.add(new Coordinate(20, 80));
+				path.add(new Coordinate(100, 80));
+				path.add(new Coordinate(100, 100));
+				path.add(new Coordinate(0, 100)); // bottom left
+				break;
+			//Amal
+			case 1:
+				while (undiscovered.size() != 0) {
+					int n = rand.nextInt(undiscovered.size());
+					path.add(undiscovered.get(n));
+					undiscovered.remove(n);
+				}
+				break;
+		}
 	}
 
 	public void setDirection() {
@@ -107,6 +138,13 @@ public class Agent {
 					isDiverting = false;
 			}
 		}
+
+		for(int i = 0; i <  path.size(); i++){
+			if (x == path.get(i).getX() && y == path.get(i).getY()){
+				path.remove(i);
+			}
+		}
+
 		setDirection(); // set the direction
 
 		// move agent normally
