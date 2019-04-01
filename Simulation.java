@@ -24,7 +24,7 @@ public class Simulation extends JPanel {
 	public boolean isSimulating;
 
 	private Node[][] nodes = new Node[SIZE][SIZE];
-	private Agent[] agents = new Agent[5];
+	private Agent[] agents = new Agent[2];
 
 	public Simulation(int iteration) {
 		setup();
@@ -141,9 +141,6 @@ public class Simulation extends JPanel {
 						else
 							agents[i].divertPath(new Coordinate(x1 - 5, y1)); // divert left
 					}
-
-					else {
-						/* non moving collision, should never happen */}
 				}
 			}
 		}
@@ -314,6 +311,7 @@ public class Simulation extends JPanel {
 		fw.write(sb.toString());
 		fw.close();
 	}
+<<<<<<< HEAD
 	
 	public static void runJarFile(String args[]) throws IOException {
 		if (args.length == 0) {
@@ -327,12 +325,11 @@ public class Simulation extends JPanel {
 			System.out.println("\n");
 		}
 	}
+=======
+>>>>>>> e45a93c5313e6d2e12e0f5e6d5ea7f24acc8f303
 
 	public static void main(String args[]) throws InterruptedException, IOException {
 
-		// Start the .jar file via command prompt when double clicked
-		runJarFile(args);
-		
 		Scanner in = new Scanner(System.in);
 		int iterations, simSpeed;
 
