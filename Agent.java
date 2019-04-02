@@ -7,10 +7,12 @@ import java.util.Queue;
 import java.util.Stack;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.Random;
+import static java.lang.Math.abs;
 
 public class Agent {
 
 	private int agentID;
+	private int lazyCoefficient;
 	private int x, y, radius, velX, velY, stepCount, numFound;
 	private int frameX, frameY;
 	private String color;
@@ -65,7 +67,7 @@ public class Agent {
 				break;
 		}
 		generateUndiscovered();
-		generatePath(Simulation.mode);
+		generatePath();
 	}
 
 	public void generateUndiscovered(){
@@ -76,7 +78,7 @@ public class Agent {
 		}
 	}
 
-	public void generatePath(int mode) {
+	public void generatePath() {
 
 			if (true) {
 				switch (agentID) {
@@ -106,65 +108,31 @@ public class Agent {
 						break;
 					//Kalev
 					case 2:
+						calculateCircularPath();
+						break;
+					//Nam
+					case 3:
 						while (undiscovered.size() != 0) {
 							int n = rand.nextInt(undiscovered.size());
 							path.add(undiscovered.get(n));
 							undiscovered.remove(n);
 						}
 						break;
-					// scenario 2 and 3 path
-				}
-			} else {
-				switch (agentID) {
-					case 0:
-						path.add(new Coordinate(50, 50)); // back to center
-						path.add(new Coordinate(0, 0));
-						path.add(new Coordinate(100, 0));
-						path.add(new Coordinate(100, 100));
-						path.add(new Coordinate(0, 100));
-						path.add(new Coordinate(90, 10));
-						currentTarget = new Coordinate(10, 10); // start
-						break;
-					case 1:
-						path.add(new Coordinate(44, 44)); // back to center
-						path.add(new Coordinate(0, 100));
-						path.add(new Coordinate(0, 0));
-						path.add(new Coordinate(100, 0));
-						path.add(new Coordinate(100, 100));
-						path.add(new Coordinate(10, 30));
-						currentTarget = new Coordinate(90, 30); // start
-						break;
-					case 2:
-						path.add(new Coordinate(56, 44)); // back to center
-						path.add(new Coordinate(100, 100));
-						path.add(new Coordinate(0, 100));
-						path.add(new Coordinate(0, 0));
-						path.add(new Coordinate(100, 0));
-						path.add(new Coordinate(90, 50));
-						currentTarget = new Coordinate(10, 50); // start
-						break;
-					case 3:
-						path.add(new Coordinate(44, 54)); // back to center
-						path.add(new Coordinate(100, 0));
-						path.add(new Coordinate(100, 100));
-						path.add(new Coordinate(0, 100));
-						path.add(new Coordinate(0, 0));
-						path.add(new Coordinate(10, 70));
-						currentTarget = new Coordinate(90, 70); // start
-						break;
-					case 4:
-
-						path.add(new Coordinate(54, 54)); // back to center
-						path.add(new Coordinate(0, 0));
-						path.add(new Coordinate(100, 100));
-						path.add(new Coordinate(0, 100));
-						path.add(new Coordinate(0, 100));
-						path.add(new Coordinate(90, 90)); // end
-						currentTarget = new Coordinate(10, 90); // start
-						break;
 				}
 			}
 		}
+
+	private void calculateCircularPath() {
+		path.add(new Coordinate(0, 0));
+		path.add(new Coordinate(100, 0));
+		path.add(new Coordinate(100, 100));
+		path.add(new Coordinate(0, 100));
+		path.add(new Coordinate(25,25));
+		path.add(new Coordinate(75,25));
+		path.add(new Coordinate(75,75));
+		path.add(new Coordinate(25,75));
+		path.add(new Coordinate(50, 50));
+	}
 
 	public void setDirection() {
 		// decide left, right or none
@@ -227,23 +195,27 @@ public class Agent {
 
 	// if agent learns of a target location, sidetrack
 	public void sideTrack(Coordinate c) {
-		path.add(currentTarget); // add current target to path again
-		if (Simulation.mode == 1)
-			path.add(new Coordinate(x, y)); // add current location to path, only needed for mode 2
-		currentTarget = c; // change current target to target that was given
-		setDirection();
+		int coordX = c.getX();
+		int coordY = c.getY();
+		if(abs(coordX - x) < lazyCoefficient || abs(coordY - y) < lazyCoefficient ) {
+			path.add(currentTarget); // add current target to path again
+			if (Simulation.mode == 1)
+				path.add(new Coordinate(x, y)); // add current location to path, only needed for mode 2
+			currentTarget = c; // change current target to target that was given
+			setDirection();
+		}
 	}
 
 	public void checkInbox() {
 		// if inbox isn't empty and the agent will listen, side track current path to new target
-		if (!inbox.isEmpty()  && getListenAttribute()) {
+		if (!inbox.isEmpty() && willListen == true) {
 			for (int i = 0; i < inbox.size(); i++) {
 				sideTrack(inbox.remove().coordinate);
 			}
 		}
 	}
 
-	public void update() {
+	public void agentUpdate() {
 
 		checkInbox();
 		move();
@@ -357,10 +329,6 @@ public class Agent {
 		return (getHappiness() - getMinHappiness()) / (getMaxHappiness() - getMinHappiness());
 	}
 
-	public boolean getListeningAbility() {
-		return willListen;
-	}
-
 	public boolean getLyingAttribute() {
 		return lies;
 	}
@@ -371,6 +339,14 @@ public class Agent {
 
 	public boolean getListenAttribute() {
 		return willListen;
+	}
+
+	public int getlazyCoefficient() {
+		return lazyCoefficient;
+	}
+
+	public void setLazyCoefficient(int coeff) {
+		this.lazyCoefficient = coeff;
 	}
 
 	public void setListenAttribute(boolean listen) {
@@ -415,7 +391,6 @@ public class Agent {
 	}
 
 	public void addMessage(Message m) {
-		System.out.print(m);
 		inbox.add(m);
 	}
 }

@@ -24,7 +24,7 @@ public class Simulation extends JPanel {
 	public boolean isSimulating;
 
 	private Node[][] nodes = new Node[SIZE][SIZE];
-	private Agent[] agents = new Agent[3];
+	private Agent[] agents = new Agent[4];
 
 	public Simulation(int iteration) {
 		setup();
@@ -74,11 +74,19 @@ public class Simulation extends JPanel {
 		agents[0].setLyingAttribute(false);
 		agents[1].setLyingAttribute(false);
 		agents[2].setLyingAttribute(true);
+		agents[3].setLyingAttribute(false);
 
 		//set agents LISTEN attributes (broadcasts need to be fixed)
 		agents[0].setListenAttribute(true);
-		agents[1].setListenAttribute(false);
+		agents[1].setListenAttribute(true);
 		agents[2].setListenAttribute(true);
+		agents[3].setListenAttribute(true);
+
+		//set lazyCoefficient (higher means less lazy)
+		agents[0].setLazyCoefficient(100);
+		agents[1].setLazyCoefficient(100);
+		agents[2].setLazyCoefficient(15);
+		agents[3].setLazyCoefficient(100);
 	}
 
 	public void detectAgentCollision() {
@@ -175,7 +183,7 @@ public class Simulation extends JPanel {
 						}
 					}
 
-					// if in mode 1 or 2, if there is still a target there, but belongs to a
+					// if in mode 1 or 2 (scenario 2 or 3), if there is still a target there, but belongs to a
 					// different agent
 					else if (mode != 0 && nodes[i][j].getAgentID() != -1) {
 
@@ -184,18 +192,15 @@ public class Simulation extends JPanel {
 							nodes[i][j].setIsFound(true);
 
 							// if scenario 3, check if recipients has less than mostFound-2 targets found
-							if (mode == 2 && agents[nodes[i][j].getAgentID()].getNumFound() < mostFound - 2) {
+							if (mode == 3 && agents[nodes[i][j].getAgentID()].getNumFound() < mostFound - 2) {
 								continue;
-							}
-							//when a lying agent finds an objective, it will broadcast the wrong coordinates
-							if(agents[k].getLyingAttribute()) {
+							} else if(mode == 3 && agents[nodes[i][j].getAgentID()].getNumFound() < mostFound - 2 && agents[k].getLyingAttribute()){
 								agents[nodes[i][j].getAgentID()].addMessage(new Message(nodes[i][j].getAgentID(),
 										"target found", new Coordinate(0, 0)));
 							} else {
 								agents[nodes[i][j].getAgentID()].addMessage(new Message(nodes[i][j].getAgentID(),
 										"target found", new Coordinate(nodes[i][j].getX(), nodes[i][j].getY())));
 							}
-
 						}
 					}
 				}
@@ -211,7 +216,7 @@ public class Simulation extends JPanel {
 		for (int i = 0; i < agents.length; i++) {
 			if (agents[i].isActive) {
 				checkBroadcast(agents[i]);
-				agents[i].update();
+				agents[i].agentUpdate();
 			}
 		}
 	}
