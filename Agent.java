@@ -108,30 +108,35 @@ public class Agent {
 						break;
 					//Kalev
 					case 2:
-						calculateCircularPath();
+						rectangleSweep();
 						break;
 					//Nam
 					case 3:
-						while (undiscovered.size() != 0) {
-							int n = rand.nextInt(undiscovered.size());
-							path.add(undiscovered.get(n));
-							undiscovered.remove(n);
-						}
+						circleSweep();
+						break;
+					//Mingwei
+					case 4:
 						break;
 				}
+
 			}
 		}
 
-	private void calculateCircularPath() {
-		path.add(new Coordinate(0, 0));
-		path.add(new Coordinate(100, 0));
-		path.add(new Coordinate(100, 100));
-		path.add(new Coordinate(0, 100));
-		path.add(new Coordinate(25,25));
-		path.add(new Coordinate(75,25));
-		path.add(new Coordinate(75,75));
-		path.add(new Coordinate(25,75));
-		path.add(new Coordinate(50, 50));
+	private void rectangleSweep() {
+		for(int y = 0; y < 10; y++) {
+			for(int x = 0; x < 100; x++) {
+				path.add(new Coordinate(x,y * 10));
+			}
+		}
+	}
+
+	private void circleSweep() {
+		for(int i = 0; i < 2; i++) {
+			path.add(new Coordinate(0 + (25 * i),0 + (25 * i)));
+			path.add(new Coordinate(100 - (25 * i),0 + (25 * i)));
+			path.add(new Coordinate(100 - (25 * i),100 - (25 * i)));
+			path.add(new Coordinate(0 + (25 * i),100 - (25 * i)));
+		}
 	}
 
 	public void setDirection() {

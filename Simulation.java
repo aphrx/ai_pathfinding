@@ -24,7 +24,7 @@ public class Simulation extends JPanel {
 	public boolean isSimulating;
 
 	private Node[][] nodes = new Node[SIZE][SIZE];
-	private Agent[] agents = new Agent[4];
+	private Agent[] agents = new Agent[5];
 
 	public Simulation(int iteration) {
 		setup();
@@ -75,18 +75,22 @@ public class Simulation extends JPanel {
 		agents[1].setLyingAttribute(false);
 		agents[2].setLyingAttribute(true);
 		agents[3].setLyingAttribute(false);
+		agents[4].setLyingAttribute(false);
 
 		//set agents LISTEN attributes (broadcasts need to be fixed)
 		agents[0].setListenAttribute(true);
 		agents[1].setListenAttribute(true);
 		agents[2].setListenAttribute(true);
 		agents[3].setListenAttribute(true);
+		agents[4].setListenAttribute(true);
+
 
 		//set lazyCoefficient (higher means less lazy)
 		agents[0].setLazyCoefficient(100);
 		agents[1].setLazyCoefficient(100);
 		agents[2].setLazyCoefficient(15);
 		agents[3].setLazyCoefficient(100);
+		agents[4].setLazyCoefficient(100);
 	}
 
 	public void detectAgentCollision() {
@@ -334,7 +338,7 @@ public class Simulation extends JPanel {
 
 		// get scenario number
 		do {
-			System.out.print("Enter the scenario you wish to simulate (1-3): ");
+			System.out.print("Scenario 1 - SCENARIO_NAME_HERE \nScenario 2 - cooperative \nScenario 3 - competitive \nEnter the scenario you wish to simulate: ");
 			mode = in.nextInt() - 1;
 		} while (mode < 0 || mode > 2);
 
