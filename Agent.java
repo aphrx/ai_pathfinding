@@ -116,6 +116,7 @@ public class Agent {
 						break;
 					//Mingwei
 					case 4:
+						path.add(new Coordinate(50, 50)); // bottom left
 						break;
 				}
 

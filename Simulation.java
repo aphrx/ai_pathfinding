@@ -88,7 +88,7 @@ public class Simulation extends JPanel {
 		//set lazyCoefficient (higher means less lazy)
 		agents[0].setLazyCoefficient(100);
 		agents[1].setLazyCoefficient(100);
-		agents[2].setLazyCoefficient(15);
+		agents[2].setLazyCoefficient(35);
 		agents[3].setLazyCoefficient(100);
 		agents[4].setLazyCoefficient(100);
 	}
@@ -201,7 +201,8 @@ public class Simulation extends JPanel {
 							} else if(mode == 3 && agents[nodes[i][j].getAgentID()].getNumFound() < mostFound - 2 && agents[k].getLyingAttribute()){
 								agents[nodes[i][j].getAgentID()].addMessage(new Message(nodes[i][j].getAgentID(),
 										"target found", new Coordinate(0, 0)));
-							} else {
+							} else if(mode == 2){
+								System.out.print("message");
 								agents[nodes[i][j].getAgentID()].addMessage(new Message(nodes[i][j].getAgentID(),
 										"target found", new Coordinate(nodes[i][j].getX(), nodes[i][j].getY())));
 							}
