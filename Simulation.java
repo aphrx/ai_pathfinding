@@ -196,13 +196,12 @@ public class Simulation extends JPanel {
 							nodes[i][j].setIsFound(true);
 
 							// if scenario 3, check if recipients has less than mostFound-2 targets found
-							if (mode == 3 && agents[nodes[i][j].getAgentID()].getNumFound() < mostFound - 2) {
+							if (mode == 2 && agents[nodes[i][j].getAgentID()].getNumFound() < mostFound - 2) {
 								continue;
-							} else if(mode == 3 && agents[nodes[i][j].getAgentID()].getNumFound() < mostFound - 2 && agents[k].getLyingAttribute()){
+							} else if(mode == 2 && agents[k].getLyingAttribute()){
 								agents[nodes[i][j].getAgentID()].addMessage(new Message(nodes[i][j].getAgentID(),
 										"target found", new Coordinate(0, 0)));
-							} else if(mode == 2){
-								System.out.print("message");
+							} else if(mode == 1){
 								agents[nodes[i][j].getAgentID()].addMessage(new Message(nodes[i][j].getAgentID(),
 										"target found", new Coordinate(nodes[i][j].getX(), nodes[i][j].getY())));
 							}

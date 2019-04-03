@@ -397,6 +397,7 @@ public class Agent {
 	}
 
 	public void addMessage(Message m) {
+		System.out.print(m);
 		inbox.add(m);
 	}
 }
