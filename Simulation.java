@@ -71,26 +71,23 @@ public class Simulation extends JPanel {
 	//this method is where we different agent attributes are set
 	private void setAgentAttributes(Agent[] agents) {
 		//set agents LIE attribute
-		agents[0].setLyingAttribute(false);
-		agents[1].setLyingAttribute(false);
-		agents[2].setLyingAttribute(true);
-		agents[3].setLyingAttribute(false);
-		agents[4].setLyingAttribute(false);
+		for (int i = 0; i < agents.length; i++)
+			agents[i].setLyingAttribute(false);
 
 		//set agents LISTEN attributes (broadcasts need to be fixed)
-		agents[0].setListenAttribute(true);
-		agents[1].setListenAttribute(true);
-		agents[2].setListenAttribute(true);
-		agents[3].setListenAttribute(true);
-		agents[4].setListenAttribute(true);
+		for (int i = 0; i < agents.length; i++)
+			agents[i].setListenAttribute(true);
 
 
 		//set lazyCoefficient (higher means less lazy)
-		agents[0].setLazyCoefficient(1000);
-		agents[1].setLazyCoefficient(1000);
-		agents[2].setLazyCoefficient(35);
-		agents[3].setLazyCoefficient(1000);
-		agents[4].setLazyCoefficient(1000);
+		for (int i = 0; i < agents.length; i++) {
+			if (i == 2) {
+				agents[2].setLazyCoefficient(15);
+			}
+			else{
+				agents[0].setLazyCoefficient(100);
+			}
+		}
 	}
 
 	public void detectAgentCollision() {
