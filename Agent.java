@@ -116,12 +116,40 @@ public class Agent {
 						break;
 					//Mingwei
 					case 4:
-						path.add(new Coordinate(50, 50)); // bottom left
+						case4_search_pattern();
 						break;
 				}
 
 			}
-		}
+		}	
+	private void case4_search_pattern() {
+	        // pregenerate a spiral and deal with message somewhere else
+                // remember that sin(pi/4) is roughly 0.7
+                // for now assuming field size of 100 x 100 and scan_range of 10
+
+                // hard code everything, it's the cool thing to do
+
+                path.push(new Coordinate(49, 49));
+                path.push(new Coordinate(100 - 49, 100 - 49));
+                path.push(new Coordinate(100 - 49, 49));
+                path.push(new Coordinate(35, 49));
+
+                path.push(new Coordinate(35, 100 - 35));
+                path.push(new Coordinate(100 - 35, 100 - 35));
+                path.push(new Coordinate(100 - 35, 35));
+                path.push(new Coordinate(21, 35));
+
+                path.push(new Coordinate(21, 100 - 21));
+                path.push(new Coordinate(100 - 21, 100 - 21));
+                path.push(new Coordinate(100 - 21, 21));
+                path.push(new Coordinate(7, 21));
+
+                path.push(new Coordinate(7, 100 - 7));
+                path.push(new Coordinate(100 - 7, 100 - 7));
+                path.push(new Coordinate(100 - 7, 7));
+                path.push(new Coordinate(7, 7));
+	}
+
 
 	private void rectangleSweep() {
 		for(int y = 0; y < 10; y++) {
@@ -224,6 +252,22 @@ public class Agent {
 	public void agentUpdate() {
 
 		checkInbox();
+		
+		if(mode == 4) {
+			// toss a coin
+			if(ThreadLocalRandom.current().nextBoolean()) {
+				willListen = false;
+			}
+			// toss another coin
+			if(ThreadLocalRandom.current().nextBoolean()) {
+				lies = true;	
+				int fake_x = ThreadLocalRandom.current().nextInt(0, 99);
+				int fake_y = ThreadLocalRandom.current().nextInt(0, 99);
+				int random_agent = ThreadLocalRandom.current().nextInt(0, 4);
+			
+			}
+		}
+
 		move();
 
 		// if we have won, no need to broadcast
