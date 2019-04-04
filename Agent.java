@@ -72,9 +72,34 @@ public class Agent {
 	}
 
 	public void generatePath() {
+		// pregenerate a spiral and deal with message somewhere else
+		// remember that sin(pi/4) is roughly 0.7
+		// for now assuming field size of 100 x 100 and scan_range of 10
+		
 
-		path.add(new Coordinate(0, 100)); // bottom left
+		// hard code everything, it's the cool thing to do
+		
+		path.push(new Coordinate(49, 49));
+		path.push(new Coordinate(100 - 49, 100 - 49));
+		path.push(new Coordinate(100 - 49, 49)); 
+		path.push(new Coordinate(35, 49));
 
+		path.push(new Coordinate(35, 100 - 35));
+		path.push(new Coordinate(100 - 35, 100 - 35));
+		path.push(new Coordinate(100 - 35, 35));
+		path.push(new Coordinate(21, 35));
+
+		path.push(new Coordinate(21, 100 - 21));
+		path.push(new Coordinate(100 - 21, 100 - 21));
+		path.push(new Coordinate(100 - 21, 21));
+		path.push(new Coordinate(7, 21));
+		
+		path.push(new Coordinate(7, 100 - 7));
+		path.push(new Coordinate(100 - 7, 100 - 7));
+		path.push(new Coordinate(100 - 7, 7));
+		path.push(new Coordinate(7, 7));
+		//path.push(new Coordinate(100, 100));	
+		
 	}
 
 	public void setDirection() {
@@ -103,6 +128,12 @@ public class Agent {
 			if (!path.isEmpty()) {
 				// get next in line, pop it from stack
 				currentTarget = path.pop();
+				// toss a coin
+				if(ThreadLocalRandom.current().nextBoolean()) {
+					// fake news
+					broadcast = new Message(-1, "done path", null);
+				}
+
 				if (isDiverting)
 					isDiverting = false;
 			}
@@ -131,8 +162,8 @@ public class Agent {
 
 	// if agent learns of a target location, sidetrack
 	public void sideTrack(Coordinate c) {
-		path.add(currentTarget); // add current target to path again
-		path.add(new Coordinate(x, y)); // add current location to path, only needed for mode 2
+		path.push(currentTarget); // add current target to path again
+		path.push(new Coordinate(x, y)); // add current location to path, only needed for mode 2
 		currentTarget = c; // change current target to target that was given
 		setDirection();
 	}
@@ -141,7 +172,14 @@ public class Agent {
 		// if inbox isn't empty, side track current path to new target
 		if (!inbox.isEmpty()) {
 			for (int i = 0; i < inbox.size(); i++) {
-				sideTrack(inbox.remove().coordinate);
+				// toss a coin
+				if(ThreadLocalRandom.current().nextBoolean()) {
+					// go ahead and trust
+					sideTrack(inbox.remove().coordinate);
+				} else {
+					// ignore
+					inbox.remove();
+				}
 			}
 		}
 	}
@@ -149,6 +187,17 @@ public class Agent {
 	public void update() {
 
 		checkInbox();
+		// harass other people
+		// toss a coin
+		if(ThreadLocalRandom.current().nextBoolean()) {
+			int fake_x = ThreadLocalRandom.current().nextInt(0, 99);
+			int fake_y = ThreadLocalRandom.current().nextInt(0, 99);
+			int random_agent = ThreadLocalRandom.current().nextInt(0, 4);
+
+			broadcast = new Message(random_agent, "target", 
+					new Coordinate(fake_x, fake_y));
+		}
+
 		move();
 
 		// if we have won, no need to broadcast
