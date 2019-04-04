@@ -24,7 +24,7 @@ public class Simulation extends JPanel {
 	public boolean isSimulating;
 
 	private Node[][] nodes = new Node[SIZE][SIZE];
-	private Agent[] agents = new Agent[1];
+	private Agent[] agents = new Agent[5];
 
 	public Simulation(int iteration) {
 		setup();
@@ -41,6 +41,9 @@ public class Simulation extends JPanel {
 		// initialize agents
 		for (int i = 0; i < agents.length; i++)
 			agents[i] = new Agent(i, FRAMEX, FRAMEY);
+
+		setAgentAttributes(agents);
+
 
 		// initialize nodes
 		for (int i = 0; i < SIZE; i++) {
@@ -62,6 +65,28 @@ public class Simulation extends JPanel {
 		for (int i = 0; i < agents.length * 5; i++) {
 			nodes[xls[i]][yls[i]].setTargetID(i);
 			nodes[xls[i]][yls[i]].setAgentID(i / 5);
+		}
+	}
+
+	//this method is where we different agent attributes are set
+	private void setAgentAttributes(Agent[] agents) {
+		//set agents LIE attribute
+		for (int i = 0; i < agents.length; i++)
+			agents[i].setLyingAttribute(false);
+
+		//set agents LISTEN attributes (broadcasts need to be fixed)
+		for (int i = 0; i < agents.length; i++)
+			agents[i].setListenAttribute(true);
+
+
+		//set lazyCoefficient (higher means less lazy)
+		for (int i = 0; i < agents.length; i++) {
+			if (i == 2) {
+				agents[2].setLazyCoefficient(15);
+			}
+			else{
+				agents[0].setLazyCoefficient(100);
+			}
 		}
 	}
 
@@ -121,9 +146,6 @@ public class Simulation extends JPanel {
 						else
 							agents[i].divertPath(new Coordinate(x1 - 5, y1)); // divert left
 					}
-
-					else {
-						/* non moving collision, should never happen */}
 				}
 			}
 		}
@@ -161,6 +183,27 @@ public class Simulation extends JPanel {
 								mostFound = agents[k].getNumFound();
 						}
 					}
+
+					// if in mode 1 or 2 (scenario 2 or 3), if there is still a target there, but belongs to a
+					// different agent
+					else if (mode != 0 && nodes[i][j].getAgentID() != -1) {
+
+						// check if target is within search radius and is not already found and the agent that found the objective
+						if (isWithinRadius && !nodes[i][j].getIsFound()) {
+							nodes[i][j].setIsFound(true);
+
+							// if scenario 3, check if recipients has less than mostFound-2 targets found
+							if (mode == 2 && agents[nodes[i][j].getAgentID()].getNumFound() < mostFound - 2) {
+								continue;
+							} else if(mode == 2 && agents[k].getLyingAttribute()){
+								agents[nodes[i][j].getAgentID()].addMessage(new Message(nodes[i][j].getAgentID(),
+										"target found", new Coordinate(0, 0)));
+							} else if(mode == 1){
+								agents[nodes[i][j].getAgentID()].addMessage(new Message(nodes[i][j].getAgentID(),
+										"target found", new Coordinate(nodes[i][j].getX(), nodes[i][j].getY())));
+							}
+						}
+					}
 				}
 			}
 		}
@@ -174,7 +217,7 @@ public class Simulation extends JPanel {
 		for (int i = 0; i < agents.length; i++) {
 			if (agents[i].isActive) {
 				checkBroadcast(agents[i]);
-				agents[i].update();
+				agents[i].agentUpdate();
 			}
 		}
 	}
@@ -220,17 +263,86 @@ public class Simulation extends JPanel {
 			agents[i].draw(g2d);
 	}
 
+	public void generateCSV1(int iteration) throws IOException {
+		FileWriter fw = new FileWriter(CSV1NAME, true);
+		StringBuilder sb = new StringBuilder();
+
+		for (Agent a : agents) {
+			sb.append(String.valueOf(mode + 1)); // a (1-3)
+			sb.append(",");
+			sb.append(String.valueOf(iteration)); // b
+			sb.append(",");
+			sb.append(String.valueOf(a.getAgentID())); // c
+			sb.append(",");
+			sb.append(String.valueOf(a.getNumFound())); // d
+			sb.append(",");
+			sb.append(String.valueOf(a.getStepCount())); // e
+			sb.append(",");
+			sb.append(String.valueOf(a.getHappiness())); // f
+			sb.append(",");
+			sb.append(String.valueOf(a.getMaxHappiness())); // g
+			sb.append(",");
+			sb.append(String.valueOf(a.getMinHappiness())); // h
+			sb.append(",");
+			sb.append(String.valueOf(a.getAverageHappiness())); // i
+			sb.append(",");
+			sb.append(String.valueOf(a.getSTDHappiness())); // j
+			sb.append(",");
+			sb.append(String.valueOf(a.getCompetitiveness())); // k
+			sb.append("\n");
+
+			totHap += a.getAverageHappiness();
+			totComp += a.getCompetitiveness();
+		}
+
+		fw.write(sb.toString());
+		fw.close();
+	}
+
+	public void generateCSV2(int iterations) throws IOException {
+		FileWriter fw = new FileWriter(CSV2NAME, true);
+		StringBuilder sb = new StringBuilder();
+
+		sb.append(String.valueOf(mode + 1)); // (1-3)
+		sb.append(",");
+		sb.append(String.valueOf(totHap / (5 * iterations)));
+		sb.append(",");
+		sb.append(String.valueOf(totComp / (5 * iterations)));
+		sb.append("\n");
+
+		fw.write(sb.toString());
+		fw.close();
+	}
+	
+
 	public static void main(String args[]) throws InterruptedException, IOException {
 
 		Scanner in = new Scanner(System.in);
 		int iterations, simSpeed;
-		mode = 0;
-		iterations = 1;
-		simSpeed = 50;
+
+		// get scenario number
+		do {
+			System.out.print("Scenario 1 - Competitive (Classic) \nScenario 2 - Cooperative \nScenario 3 - Competitive (Lying)\nEnter the scenario you wish to simulate: ");
+			mode = in.nextInt() - 1;
+		} while (mode < 0 || mode > 2);
+
+		// get number of iterations
+		do {
+			System.out.print("Enter the number of iterations: ");
+			iterations = in.nextInt();
+		} while (iterations <= 0);
+
+		// get simulation speed
+		do {
+			System.out.print("Enter simulation speed (0-4) or 5 for no animations: ");
+			simSpeed = in.nextInt();
+			simSpeed = ((5 - simSpeed) * 10);
+		} while (simSpeed != 0 && (simSpeed < 10 || simSpeed > 50));
 
 		double totalRuntime = System.nanoTime();
 
 		Simulation sim = null;
+
 
 		for (int i = 0; i < iterations; i++) {
 			System.out.println();
@@ -238,15 +350,16 @@ public class Simulation extends JPanel {
 			JFrame frame = new JFrame(SIMNAME + " - scenario " + (mode + 1));
 			sim = new Simulation(i);
 
-
-			frame.add(sim);
-			frame.setSize(FRAMEX + 15, FRAMEY + 40); // offset so all cells show in window
-			frame.setResizable(false);
-			frame.setLocation(900, 10); // moved window to right to see command window
-			frame.setAlwaysOnTop(true);
-			frame.setVisible(true);
-			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+			// decide whether to open window or not
+			if (simSpeed > 0) {
+				frame.add(sim);
+				frame.setSize(FRAMEX + 15, FRAMEY + 40); // offset so all cells show in window
+				frame.setResizable(false);
+				frame.setLocation(900, 10); // moved window to right to see command window
+				frame.setAlwaysOnTop(true);
+				frame.setVisible(true);
+				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			}
 
 			while (sim.isSimulating) {
 				sim.update();
@@ -265,7 +378,10 @@ public class Simulation extends JPanel {
 		totalRuntime = (System.nanoTime() - totalRuntime) / 1000000000.0;
 
 		System.out.println();
-		System.out.println("Simulation complete in scenario " + (mode + 1) + " with " + iterations + " iteration(s) and animation speed " + -(simSpeed / 10 - 5) + ".");
+		if (simSpeed == 0)
+			System.out.println("Simulation complete in scenario " + (mode + 1) + " with " + iterations + " iteration(s) and no animation.");
+		else
+			System.out.println("Simulation complete in scenario " + (mode + 1) + " with " + iterations + " iteration(s) and animation speed " + -(simSpeed / 10 - 5) + ".");
 		System.out.println("Total runtime: " + TIMEFORMAT.format(totalRuntime) + "s");
 
 		System.out.print("\nPress any key to exit...");

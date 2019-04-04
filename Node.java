@@ -22,21 +22,21 @@ public class Node {
 		// draw targets
 		if (agentID >= 0) {
 			switch (agentID) {
-			case 0:
-				g2d.setColor(Color.GREEN);
-				break;
-			case 1:
-				g2d.setColor(Color.BLUE);
-				break;
-			case 2:
-				g2d.setColor(Color.BLACK);
-				break;
-			case 3:
-				g2d.setColor(Color.ORANGE);
-				break;
-			case 4:
-				g2d.setColor(Color.RED);
-				break;
+				case 0:
+					g2d.setColor(Color.GREEN);
+					break;
+				case 1:
+					g2d.setColor(Color.BLUE);
+					break;
+				case 2:
+					g2d.setColor(Color.BLACK);
+					break;
+				case 3:
+					g2d.setColor(Color.ORANGE);
+					break;
+				case 4:
+					g2d.setColor(Color.RED);
+					break;
 			}
 
 			// scale up coordinates for drawing
@@ -56,6 +56,10 @@ public class Node {
 		this.targetID = targetID;
 	}
 
+	public int getTargetID() {
+		return targetID;
+	}
+
 	public int getX() {
 		return x;
 	}
@@ -71,5 +75,9 @@ public class Node {
 
 	public void setIsFound(boolean isFound) {
 		this.isFound = isFound;
+	}
+
+	public boolean getIsFound() {
+		return isFound;
 	}
 }
