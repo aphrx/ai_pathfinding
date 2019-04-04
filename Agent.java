@@ -132,11 +132,11 @@ public class Agent {
 	}
 
 	private void circleSweep() {
-		for(int i = 0; i < 2; i++) {
-			path.add(new Coordinate(0 + (25 * i),0 + (25 * i)));
-			path.add(new Coordinate(100 - (25 * i),0 + (25 * i)));
-			path.add(new Coordinate(100 - (25 * i),100 - (25 * i)));
-			path.add(new Coordinate(0 + (25 * i),100 - (25 * i)));
+		for(int i = 0; i < 10; i++) {
+			path.add(new Coordinate(0 + (10 * i),0 + (10 * i)));
+			path.add(new Coordinate(100 - (10 * i),0 + (10 * i)));
+			path.add(new Coordinate(100 - (10 * i),100 - (10 * i)));
+			path.add(new Coordinate(0 + (10 * i),100 - (10 * i)));
 		}
 	}
 
