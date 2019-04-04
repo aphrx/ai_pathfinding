@@ -205,8 +205,8 @@ public class Agent {
 		int coordY = c.getY();
 		if(abs(coordX - x) < lazyCoefficient || abs(coordY - y) < lazyCoefficient ) {
 			path.add(currentTarget); // add current target to path again
-			if (Simulation.mode == 1)
-				path.add(new Coordinate(x, y)); // add current location to path, only needed for mode 2
+			if (Simulation.mode == 1 || Simulation.mode == 2)
+				path.add(new Coordinate(x, y));
 			currentTarget = c; // change current target to target that was given
 			setDirection();
 		}

@@ -86,11 +86,11 @@ public class Simulation extends JPanel {
 
 
 		//set lazyCoefficient (higher means less lazy)
-		agents[0].setLazyCoefficient(100);
-		agents[1].setLazyCoefficient(100);
+		agents[0].setLazyCoefficient(1000);
+		agents[1].setLazyCoefficient(1000);
 		agents[2].setLazyCoefficient(35);
-		agents[3].setLazyCoefficient(100);
-		agents[4].setLazyCoefficient(100);
+		agents[3].setLazyCoefficient(1000);
+		agents[4].setLazyCoefficient(1000);
 	}
 
 	public void detectAgentCollision() {
