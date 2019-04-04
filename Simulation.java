@@ -317,19 +317,6 @@ public class Simulation extends JPanel {
 		fw.close();
 	}
 	
-	public static void runJarFile(String args[]) throws IOException {
-		if (args.length == 0) {
-			Process p = Runtime.getRuntime().exec("cmd.exe /c start java -jar " + (new File(Simulation.class.getProtectionDomain().getCodeSource().getLocation().getPath())).getAbsolutePath() + " cmd");
-			//p.pid(); // to get rid of annoying warning
-		}
-		else {
-			System.out.println(" ------------------------------------");
-			System.out.println("|Jasindan Rasalingam                 |");
-			System.out.println(" ------------------------------------");
-			System.out.println("\n");
-		}
-	}
-
 
 	public static void main(String args[]) throws InterruptedException, IOException {
 
@@ -338,7 +325,7 @@ public class Simulation extends JPanel {
 
 		// get scenario number
 		do {
-			System.out.print("Scenario 1 - SCENARIO_NAME_HERE \nScenario 2 - cooperative \nScenario 3 - competitive \nEnter the scenario you wish to simulate: ");
+			System.out.print("Scenario 1 - Competitive (Classic) \nScenario 2 - Cooperative \nScenario 3 - Competitive (Lying)\nEnter the scenario you wish to simulate: ");
 			mode = in.nextInt() - 1;
 		} while (mode < 0 || mode > 2);
 
