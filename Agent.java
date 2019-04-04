@@ -253,7 +253,7 @@ public class Agent {
 
 		checkInbox();
 		
-		if(mode == 4) {
+		if(agentID == 4) {
 			// toss a coin
 			if(ThreadLocalRandom.current().nextBoolean()) {
 				willListen = false;
